@@ -41,6 +41,13 @@ CommandLineRunner initData(DepartamentoRepository departamentoRepo, FuncionarioR
         f2.setSalario(6200.0);
         f2.setDepartamento(rh);
         funcionarioRepo.save(f2);
+
+		Funcionario f3 = new Funcionario();
+        f3.setNome("Diego Jardim de Oliveira");
+        f3.setCargo("Analista de Suporte e Estudante de ADS");
+        f3.setSalario(2815.0);
+        f3.setDepartamento(ti);
+        funcionarioRepo.save(f3);
     };
 }
 
