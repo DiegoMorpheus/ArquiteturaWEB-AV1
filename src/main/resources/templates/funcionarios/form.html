@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Cadastro de Funcionário</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1 th:text="${funcionario.id == null ? 'Novo Funcionário' : 'Editar Funcionário'}"></h1>
+<form th:action="@{/web/funcionarios/salvar}" th:object="${funcionario}" method="post">
+    <input type="hidden" th:field="*{id}" />
+    <label>Nome: <input type="text" th:field="*{nome}" /></label><br/>
+    <label>Email: <input type="email" th:field="*{email}" /></label><br/>
+    <label>Data de Admissão: <input type="date" th:field="*{dataAdmissao}" /></label><br/>
+    <label>Departamento:
+      <label>Departamento:
+    <select th:field="*{departamento}" required>
+        <option th:each="d : ${departamentos}" th:value="${d.id}" th:text="${d.nome}"></option>
+    </select>
+</label><br/>
+
+    </label><br/>
+    <button type="submit">Salvar</button>
+</form>
+<a th:href="@{/web/funcionarios}">Voltar</a>
+</body>
+</html>

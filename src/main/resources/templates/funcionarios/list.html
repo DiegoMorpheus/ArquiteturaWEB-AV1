@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Funcionários</title>
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+
+</head>
+<body>
+<h1>Funcionários</h1>
+<a th:href="@{/web/funcionarios/novo}">Novo Funcionário</a>
+<table border="1">
+    <tr><th>Nome</th><th>Email</th><th>Departamento</th><th>Ações</th></tr>
+    <tr th:each="f : ${funcionarios}">
+        <td th:text="${f.nome}"></td>
+        <td th:text="${f.email}"></td>
+        <td th:text="${f.departamento.nome}"></td>
+       
+         <td>
+        <a th:href="@{'/web/funcionarios/editar/' + ${f.id}}">Editar</a> |
+        <a th:href="@{'/web/funcionarios/excluir/' + ${f.id}}"
+           onclick="return confirm('Tem certeza que deseja excluir este funcionário?');">
+           Excluir
+        </a>
+    </td>
+  
+
+    </tr>
+</table>
+</body>
+</html>

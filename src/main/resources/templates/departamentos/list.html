@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Departamentos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<h1>Departamentos</h1>
+
+
+<div th:if="${erro}" class="alert-error">
+    <p th:text="${erro}"></p>
+</div>
+
+<div th:if="${sucesso}" class="alert-success">
+    <p th:text="${sucesso}"></p>
+</div>
+
+
+<a th:href="@{/web/departamentos/novo}">Novo Departamento</a>
+<table border="1">
+    <tr><th>Nome</th><th>Localização</th><th>Ações</th></tr>
+    <tr th:each="d : ${departamentos}">
+        <td th:text="${d.nome}"></td>
+        <td th:text="${d.localizacao}"></td>
+        <td>
+            <a th:href="@{'/web/departamentos/editar/' + ${d.id}}">Editar</a> |
+            <a th:href="@{'/web/departamentos/excluir/' + ${d.id}}"
+               onclick="return confirm('Tem certeza que deseja excluir este departamento?');">
+               Excluir
+            </a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
