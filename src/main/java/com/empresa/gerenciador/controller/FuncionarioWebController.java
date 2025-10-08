@@ -10,24 +10,25 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.empresa.gerenciador.model.Funcionario;
 import com.empresa.gerenciador.repository.DepartamentoRepository;
-import com.empresa.gerenciador.repository.FuncionarioRepository;
+import com.empresa.gerenciador.service.FuncionarioService;
 
 @Controller
 @RequestMapping("/web/funcionarios")
 public class FuncionarioWebController {
 
     @Autowired
-    private FuncionarioRepository funcionarioRepository;
+    private FuncionarioService funcionarioService;
 
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
     @GetMapping
     public String listar(Model model) {
-        List<Funcionario> funcionarios = funcionarioRepository.findAll();
+        List<Funcionario> funcionarios = funcionarioService.listarTodos();
         model.addAttribute("funcionarios", funcionarios);
         return "funcionarios/list";
     }
@@ -41,21 +42,22 @@ public class FuncionarioWebController {
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Funcionario funcionario) {
-        funcionarioRepository.save(funcionario);
+        funcionarioService.salvar(funcionario);
         return "redirect:/web/funcionarios";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        Funcionario funcionario = funcionarioRepository.findById(id).orElseThrow();
+        Funcionario funcionario = funcionarioService.buscarPorId(id);
         model.addAttribute("funcionario", funcionario);
         model.addAttribute("departamentos", departamentoRepository.findAll());
         return "funcionarios/form";
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable Long id) {
-        funcionarioRepository.deleteById(id);
+    public String excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        funcionarioService.excluir(id);
+        redirectAttributes.addFlashAttribute("sucesso", "Funcionário excluído com sucesso.");
         return "redirect:/web/funcionarios";
     }
 }
