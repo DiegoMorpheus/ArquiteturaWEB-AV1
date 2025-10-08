@@ -11,18 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.empresa.gerenciador.model.Departamento;
-import com.empresa.gerenciador.repository.DepartamentoRepository;
+import com.empresa.gerenciador.service.DepartamentoService;
 
 @Controller
 @RequestMapping("/web/departamentos")
 public class DepartamentoWebController {
 
     @Autowired
-    private DepartamentoRepository departamentoRepository;
+    private DepartamentoService departamentoService;
 
     @GetMapping
     public String listar(Model model) {
-        model.addAttribute("departamentos", departamentoRepository.findAll());
+        model.addAttribute("departamentos", departamentoService.listarTodos());
         return "departamentos/list";
     }
 
@@ -34,30 +34,28 @@ public class DepartamentoWebController {
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Departamento departamento) {
-        departamentoRepository.save(departamento);
+        departamentoService.salvar(departamento);
         return "redirect:/web/departamentos";
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
-        Departamento departamento = departamentoRepository.findById(id).orElseThrow();
+        Departamento departamento = departamentoService.buscarPorId(id);
         model.addAttribute("departamento", departamento);
         return "departamentos/form";
     }
 
- @GetMapping("/excluir/{id}")
-public String excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-    Departamento departamento = departamentoRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Departamento inválido: " + id));
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Departamento departamento = departamentoService.buscarPorId(id);
 
-    if (departamento.getFuncionarios() != null && !departamento.getFuncionarios().isEmpty()) {
-        redirectAttributes.addFlashAttribute("erro", "Não é possível excluir: o departamento possui funcionários vinculados.");
+        if (!departamentoService.podeExcluir(departamento)) {
+            redirectAttributes.addFlashAttribute("erro", "Não é possível excluir: o departamento possui funcionários vinculados.");
+            return "redirect:/web/departamentos";
+        }
+
+        departamentoService.excluir(id);
+        redirectAttributes.addFlashAttribute("sucesso", "Departamento excluído com sucesso.");
         return "redirect:/web/departamentos";
     }
-
-    departamentoRepository.deleteById(id);
-    redirectAttributes.addFlashAttribute("sucesso", "Departamento excluído com sucesso.");
-    return "redirect:/web/departamentos";
 }
-}
-

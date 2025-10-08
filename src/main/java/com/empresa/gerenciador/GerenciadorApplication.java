@@ -13,36 +13,39 @@ import com.empresa.gerenciador.repository.FuncionarioRepository;
 @SpringBootApplication
 public class GerenciadorApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GerenciadorApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(GerenciadorApplication.class, args);
+    }
 
-	@Bean
-CommandLineRunner initData(DepartamentoRepository departamentoRepo, FuncionarioRepository funcionarioRepo) {
-    return args -> {
-        Departamento ti = new Departamento();
-        ti.setNome("Tecnologia");
-        departamentoRepo.save(ti);
+    @Bean
+    public CommandLineRunner initData(DepartamentoRepository departamentoRepo, FuncionarioRepository funcionarioRepo) {
+        return args -> {
+            // Evita duplicação de dados ao reiniciar
+            if (departamentoRepo.count() > 0 || funcionarioRepo.count() > 0) {
+                return;
+            }
 
-        Departamento rh = new Departamento();
-        rh.setNome("Recursos Humanos");
-        departamentoRepo.save(rh);
+            Departamento ti = criarDepartamento("Tecnologia", departamentoRepo);
+            Departamento rh = criarDepartamento("Recursos Humanos", departamentoRepo);
 
-        Funcionario f1 = new Funcionario();
-        f1.setNome("Ana");
-        f1.setCargo("Desenvolvedora");
-        f1.setSalario(8500.0);
-        f1.setDepartamento(ti);
-        funcionarioRepo.save(f1);
+            criarFuncionario("Ana", "Desenvolvedora", 8500.0, ti, funcionarioRepo);
+            criarFuncionario("Carlos", "Analista de RH", 6200.0, rh, funcionarioRepo);
+            criarFuncionario("Diego Jardim de Oliveira", "Analista de Suporte e Estudante de ADS", 2815.0, ti, funcionarioRepo);
+        };
+    }
 
-        Funcionario f2 = new Funcionario();
-        f2.setNome("Carlos");
-        f2.setCargo("Analista de RH");
-        f2.setSalario(6200.0);
-        f2.setDepartamento(rh);
-        funcionarioRepo.save(f2);
-    };
-}
+    private Departamento criarDepartamento(String nome, DepartamentoRepository repo) {
+        Departamento departamento = new Departamento();
+        departamento.setNome(nome);
+        return repo.save(departamento);
+    }
 
-
+    private Funcionario criarFuncionario(String nome, String cargo, double salario, Departamento departamento, FuncionarioRepository repo) {
+        Funcionario funcionario = new Funcionario();
+        funcionario.setNome(nome);
+        funcionario.setCargo(cargo);
+        funcionario.setSalario(salario);
+        funcionario.setDepartamento(departamento);
+        return repo.save(funcionario);
+    }
 }
