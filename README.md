@@ -95,7 +95,7 @@ email: diego.morfeu@gmail.com
 Github: https://github.com/DiegoMorpheus
 
 ---
-!src/main/java/com/empresa/gerenciador/images/IMAGEM1.png
+![Imagem Inicial](src/main/java/com/empresa/gerenciador/images/IMAGEM1.png)
 
 !src/main/java/com/empresa/gerenciador/images/IMAGEM2.png
 
